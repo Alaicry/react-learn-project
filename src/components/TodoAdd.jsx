@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import { Navigate } from "react-router-dom";
 
 export class TodoAdd extends Component {
 	constructor(props) {
 		super(props);
+		this.state = { redirect: false };
 		this.handleTitleChange = this.handleTitleChange.bind(this);
 		this.handleDescChange = this.handleDescChange.bind(this);
 		this.handleImageChange = this.handleImageChange.bind(this);
@@ -48,49 +50,51 @@ export class TodoAdd extends Component {
 		newDeed.createdAt = date.toLocaleString();
 		newDeed.key = date.getTime();
 		this.props.add(newDeed);
-		this.clearFormData();
-		evt.target.reset();
+		this.setState((state) => ({ redirect: true }));
 	}
 
 	render() {
-		return (
-			<section>
-				<h1>Create new TODO</h1>
-				<form onSubmit={this.handleFormSubmit}>
-					<div className="field">
-						<label className="label">Title</label>
-						<div className="control">
-							<input className="input" onChange={this.handleTitleChange} />
+		if (this.state.redirect) {
+			return <Navigate to="/" />;
+		} else {
+			return (
+				<section>
+					<h1>Create new TODO</h1>
+					<form onSubmit={this.handleFormSubmit}>
+						<div className="field">
+							<label className="label">Title</label>
+							<div className="control">
+								<input className="input" onChange={this.handleTitleChange} />
+							</div>
 						</div>
-					</div>
-					<div className="field">
-						<label className="label">Desc</label>
-						<div className="control">
-							<textarea className="textarea" onChange={this.handleDescChange} />
+						<div className="field">
+							<label className="label">Desc</label>
+							<div className="control">
+								<textarea className="textarea" onChange={this.handleDescChange} />
+							</div>
 						</div>
-					</div>
-					<div className="field">
-						<div className="file">
-							<label className="file-label">
-								<input type="file" className="file-input" onChange={this.handleImageChange} />
-								<span className="file-cta">
-									<span className="file-label">Upload image</span>
-								</span>
-							</label>
+						<div className="field">
+							<div className="file">
+								<label className="file-label">
+									<input type="file" className="file-input" onChange={this.handleImageChange} />
+									<span className="file-cta">
+										<span className="file-label">Upload image</span>
+									</span>
+								</label>
+							</div>
 						</div>
-					</div>
-					<div className="field is-grouped is-grouped-right">
-						<div className="control">
-							<input type="reset" className="button is-link is-light" value="Reset" />
+						<div className="field is-grouped is-grouped-right">
+							<div className="control">
+								<input type="reset" className="button is-link is-light" value="Reset" />
+							</div>
+							<div className="control">
+								<input type="submit" className="button is-primary" value="Create TODO" />
+							</div>
 						</div>
-            <div className="control">
-              <input type="submit" className="button is-primary" value="Create TODO" />
-            </div>
-					</div>
-				</form>
-			</section>
-		);
+					</form>
+				</section>
+			);
+		}
 	}
 }
-
 export default TodoAdd;

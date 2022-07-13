@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
 import TodoAdd from "./components/TodoAdd";
+import TodoDetails from "./components/TodoDetails";
 import TodoList from "./components/TodoList";
 
 const dateOne = new Date(2022, 7, 19, 14, 5);
@@ -32,6 +33,8 @@ export default class App extends Component {
 		this.setDone = this.setDone.bind(this);
 		this.delete = this.delete.bind(this);
 		this.add = this.add.bind(this);
+		this.showMenu = this.showMenu.bind(this);
+		this.getDeed = this.getDeed.bind(this);
 	}
 
 	setDone(key) {
@@ -54,6 +57,16 @@ export default class App extends Component {
 		this.setState((state) => ({}));
 	}
 
+	showMenu(evt) {
+		evt.preventDefault();
+		this.setState((state) => ({ showMenu: !state.showMenu }));
+	}
+
+	getDeed(key) {
+		key = +key;
+		return this.state.data.find((current) => current.key === key);
+	}
+
 	render() {
 		return (
 			<HashRouter>
@@ -62,8 +75,17 @@ export default class App extends Component {
 						<NavLink to="/" className={({ isActive }) => "navbar-item is-uppercase" + (isActive ? " is-active" : "")}>
 							Todos
 						</NavLink>
+						<a
+							href="/"
+							className={this.state.showMenu ? "navbar-burger is-active" : "navbar-burger"}
+							onClick={this.showMenu}
+						>
+							<span></span>
+							<span></span>
+							<span></span>
+						</a>
 					</div>
-					<div className="navbar-menu">
+					<div className={this.state.showMenu ? "navbar-menu is-active" : "navbar-menu"} onClick={this.showMenu}>
 						<div className="navbar-start">
 							<NavLink to="/add" className={({ isActive }) => "navbar-item" + (isActive ? " is-active" : "")}>
 								Create TODO
@@ -75,6 +97,7 @@ export default class App extends Component {
 					<Routes>
 						<Route path="/" element={<TodoList list={this.state.data} setDone={this.setDone} delete={this.delete} />} />
 						<Route path="/add" element={<TodoAdd add={this.add} />} />
+						<Route path="/:key" element={<TodoDetails getDeed={this.getDeed} />} />
 					</Routes>
 				</main>
 			</HashRouter>
